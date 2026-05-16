@@ -10,10 +10,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.services.downloader import get_video_info, download_video
 from backend.models.requests import InfoRequest, DownloadRequest
 from backend.utils.validators import is_allowed_url
+from backend.services.cleanup import start_cleanup_scheduler
 
 load_dotenv()
 
 app = FastAPI()
+
+start_cleanup_scheduler()
 
 app.add_middleware(
     CORSMiddleware,
