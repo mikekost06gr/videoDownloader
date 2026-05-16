@@ -18,11 +18,12 @@ export async function fetchVideoInfo( url: string ): Promise<VideoInfo> {
     return data as VideoInfo
 }
 
-export async function downloadVideo(payload: DownloadRequest): Promise<Blob> {
+export async function downloadVideo(payload: DownloadRequest, signal?: AbortSignal): Promise<Blob> {
     const res = await fetch(`${API_BASE}/api/download`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
+        signal,
     })
 
     if (!res.ok) {
@@ -33,7 +34,7 @@ export async function downloadVideo(payload: DownloadRequest): Promise<Blob> {
     return res.blob()
 }
 
-export function triggerBrowserDownload(blob: Blob, filename: string) {
+export function triggerBrowserDownload(blob: Blob, filename: string): void {
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
     a.download = filename

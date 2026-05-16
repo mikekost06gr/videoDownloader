@@ -10,132 +10,87 @@ export default function App() {
 
   const [url, setUrl] = useState('')
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null)
-
   const [state, setState] = useState<AppState>('idle')
-
   const [error, setError] = useState('')
   const [progress, setProgress] = useState(0)
-
-  const [options, setOptions] = useState<DownloadRequest>({
-    url: '',
-    format: 'mp4',
-    quality: 'source',
-  })
+  const [options, setOptions] = useState<DownloadRequest>({ url: '', format: 'mp4', quality: 'source', })
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   const fakeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   function startFakeProgress() {
-
     setProgress(0)
-
     let p = 0
-
     fakeIntervalRef.current = setInterval(() => {
-
       p += Math.random() * 8
-
       if (p < 85) {
         setProgress(p)
       }
-
     }, 600)
   }
 
   function stopFakeProgress() {
-
     if (fakeIntervalRef.current) {
-
       clearInterval(fakeIntervalRef.current)
-
       fakeIntervalRef.current = null
     }
   }
 
   function handleReset() {
-
     stopFakeProgress()
-
     setUrl('')
     setVideoInfo(null)
-
     setState('idle')
-
     setError('')
     setProgress(0)
-
-    setOptions({
-      url: '',
-      format: 'mp4',
-      quality: 'source',
-    })
+    setOptions({ url: '', format: 'mp4', quality: 'source', })
   }
 
   async function handleFetch() {
-
     if (!url.trim()) {
-
       setError('Paste a URL first.')
       return
     }
 
     setError('')
     setVideoInfo(null)
-
     setState('fetching')
 
     try {
 
       const info = await fetchVideoInfo(url.trim())
-
       setVideoInfo(info)
-
-      setOptions(prev => ({
-        ...prev,
-        url: url.trim()
-      }))
-
+      setOptions(prev => ({ ...prev, url: url.trim() }))
       setState('ready')
-
     } catch (e) {
-
       setError(
         e instanceof Error
           ? e.message
           : 'Failed to collect video info.'
       )
-
       setState('error')
     }
   }
 
   async function handleDownload() {
-
     setError('')
-
     setState('downloading')
-
     startFakeProgress()
+
+    abortControllerRef.current = new AbortController()
 
     try {
 
-      const blob = await downloadVideo({
-        ...options,
-        url: url.trim()
-      })
+      const blob = await downloadVideo({ ...options, url: url.trim() }, abortControllerRef.current.signal)
 
       stopFakeProgress()
-
       setProgress(100)
-
       setState('done')
 
       const ext = options.format
-
       const safeName = (videoInfo?.title ?? 'download')
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, '_')
-        .replace(/_+/g, '_')
-        .replace(/^_|_$/g, '')
+        .replace(/[<>:"/\\|?*]/g, '')
+        .replace(/\s+/g, ' ')
         .trim()
 
       triggerBrowserDownload(
@@ -145,30 +100,33 @@ export default function App() {
 
     } catch (e) {
 
-      stopFakeProgress()
+      if (e instanceof DOMException && e.name === 'AbortError') {
+        setState('ready')
+        return
+      }
 
+      stopFakeProgress()
       setError(
         e instanceof Error
           ? e.message
           : 'Download failed!'
       )
-
       setState('error')
     }
   }
 
+  function handleCancel() {
+    abortControllerRef.current?.abort()
+    stopFakeProgress()
+    setProgress(0)
+    setState('ready')
+  }
+
   const isFetching = state === 'fetching'
-
   const isDownloading = state === 'downloading'
-
   const isDone = state === 'done'
-
   const showInfo = videoInfo !== null
-
-  const showOptions =
-    state === 'ready' ||
-    state === 'downloading' ||
-    state === 'done'
+  const showOptions = state === 'ready' || state === 'downloading' || state === 'done'
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -179,7 +137,7 @@ export default function App() {
           <h1 className="text-4xl text-[#a855f7] tracking-tight mb-2" style={{ fontFamily: 'Arial, sans-serif' }}>
             Video Converter v1.0
           </h1>
-          <p className="text-[#a855f7] test-sm opacty-60">
+          <p className="text-[#a855f7] test-sm opacity-60">
             Download your favourite Youtube videos on <strong>MP4</strong> or convert them to <strong>MP3</strong>
           </p>
         </div>
@@ -231,6 +189,15 @@ export default function App() {
             status={isDone ? "✔️Done!" : "Downloading..."}
             percent={progress}
           />
+
+          {isDownloading && (
+            <button
+              onClick={handleCancel}
+              className="w-full border border-red-800 text-red-400 py-2 text-sm rounded hover:border-red-300 transition-colors"
+            >
+              ✖️ Cancel Download
+            </button>
+          )}
 
           {isDone && (
             <button
