@@ -7,18 +7,18 @@ ALLOWED_DOMAINS = [
 ]
 
 def main():
-    """Starts the FastAPI server."""
+   ## Starts the FastAPI server.
     print("Starting server at http://localhost:8000")
     print("Press CTRL+C to stop")
     uvicorn.run("backend.main:app, host = localhost, port = 8000, reload = False")
 
 
 def format_duration(seconds: int) -> str:
-    """Converts seconds to mm:ss or hh:mm:ss
-    Arguments:
-        seconds: Duration in seconds
-    Returns:
-        Formatted duration string"""
+    ## Converts seconds to mm:ss or hh:mm:ss
+    ##Arguments:
+    ##    seconds: Duration in seconds
+    ##Returns:
+    ##    Formatted duration string
     
     if not seconds or seconds < 0:
         return "0:00"
@@ -33,12 +33,12 @@ def format_duration(seconds: int) -> str:
 
 
 def is_allowed_url(url: str, allowed_domains: list = ALLOWED_DOMAINS) -> bool:
-    """Checks if a URL belongs to an allowed domain by using urlparse for safe hostname extraction to avoid false positives."
-    Arguments:
-        url: The to be checked URL.
-        allowed_domains: List of allowed domains.
-    Returns:
-        True if allowed, False otherwise."""
+    ##Checks if a URL belongs to an allowed domain by using urlparse for safe hostname extraction to avoid false positives."
+    ##Arguments:
+    ##    url: The to be checked URL.
+    ##    allowed_domains: List of allowed domains.
+    ##Returns:
+    ##    True if allowed, False otherwise.
     
     try:
         parsed = urlparse(url)
@@ -50,11 +50,11 @@ def is_allowed_url(url: str, allowed_domains: list = ALLOWED_DOMAINS) -> bool:
     
 
 def sanitize_filename(title: str) -> str:
-    """Alters a video's title to be safed to use as a filename by removing characters that are invalid in filenames and collapses multiple spaces into one.
-    Arguments:
-        title: The un-altered video title.
-    Returns:
-        An altered "sanitized" filename-safe string."""
+    ## Alters a video's title to be safed to use as a filename by removing characters that are invalid in filenames and collapses multiple spaces into one.
+    ##Arguments:
+    ##    title: The un-altered video title.
+    ##Returns:
+    ##    An altered "sanitized" filename-safe string.
     
     if not title:
         return "download"
