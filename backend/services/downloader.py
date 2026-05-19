@@ -13,7 +13,7 @@ def format_duration(seconds: int) -> str:
         return "0:00"
     hours = seconds // 3600
     minutes = (seconds % 3600) // 60
-    secs = seconds % 60  # ✅ Fix: seconds % 60, όχι minutes % 60
+    secs = seconds % 60 
     if hours > 0:
         return f"{hours}:{minutes:02d}:{secs:02d}"
     return f"{minutes}:{secs:02d}"
@@ -138,16 +138,3 @@ def _parse_formats( formats: list ) -> list:
             })
 
     return sorted(result, key = lambda x: int(x["quality"][:-1]), reverse = True)
-
-
-if __name__ == "__main__":
-    TEST_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-
-    print("Gathering info...")
-    info = get_video_info(TEST_URL)
-    if info["success"]:
-        print(f"Title: {info['title']}")
-        print(f"Duration: {info['duration']}")
-        print(f"Available formats: {[f['quality'] for f in info['formats']]}")
-    else:
-        print(f"Error: {info['error']}")

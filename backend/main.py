@@ -30,8 +30,6 @@ DOWNLOAD_FOLDER = Path( os.getenv( "DOWNLOAD_FOLDER", "downloads" ) )
 
 ALLOWED_DOMAINS = [
     "www.youtube.com", "youtu.be", 
-    "www.vimeo.com", "vimeo.com",
-    "www.dailymotion.com", "dailymotion.com",
 ]
 
 # --- Routes ---

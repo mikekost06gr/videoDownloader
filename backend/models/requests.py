@@ -6,6 +6,7 @@ class InfoRequest( BaseModel ):
 
     @field_validator ( "url" )
     @classmethod
+    
     def url_must_not_be_empty( cls, v ):
         if not v or not v.strip():
             raise ValueError( "Url can't be empty." )
