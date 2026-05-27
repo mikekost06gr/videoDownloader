@@ -1,4 +1,3 @@
-import pytest
 from project import format_duration, is_allowed_url, sanitize_filename
 
 
@@ -43,14 +42,14 @@ def test_is_allowed_url_custom_domain():
 def test_sanitize_filename_removes_invalid_chars():
     assert sanitize_filename('My Video: "Best" One?') == "My Video Best One"
 
-def sanitize_filename_collapses_spaces():
+def test_sanitize_filename_collapses_spaces():
     assert sanitize_filename("Hello     World") == "Hello World"
 
 def test_sanitize_filename_empty():
     assert sanitize_filename("") == "download"
 
 def test_sanitize_filename_normal():
-    assert sanitize_filename("Rick Asley - Never Gonna Give You Up") == "Rick Assley - Never Gonna Give You Up"
+    assert sanitize_filename("Rick Asley - Never Gonna Give You Up") == "Rick Asley - Never Gonna Give You Up"
 
 def test_sanitize_filename_only_invalid_chars():
     assert sanitize_filename('???///') == "download"

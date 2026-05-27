@@ -20,7 +20,7 @@ start_cleanup_scheduler()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins = [os.getenv( "FRONTEND_URL")],
+    allow_origins = [os.getenv( "FRONTEND_URL", "http://localhost:5173")],
     allow_credentials = True,
     allow_methods = ["*"],
     allow_headers = ["*"],
@@ -29,7 +29,7 @@ app.add_middleware(
 DOWNLOAD_FOLDER = Path( os.getenv( "DOWNLOAD_FOLDER", "downloads" ) )
 
 ALLOWED_DOMAINS = [
-    "www.youtube.com", "youtu.be", 
+    "youtube.com", "youtu.be", 
 ]
 
 # --- Routes ---

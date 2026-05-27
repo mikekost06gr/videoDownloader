@@ -3,7 +3,7 @@ import uvicorn
 from urllib.parse import urlparse
 
 ALLOWED_DOMAINS = [
-    "www.youtube.com" , "youtu.be",
+    "youtube.com" , "youtu.be",
 ]
 
 def main():
