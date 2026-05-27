@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv(Path(__file__).parent.parent / ".env")
 
 DOWNLOAD_FOLDER = Path(os.getenv("DOWNLOAD_FOLDER"))
-MAX_AGE_HOURS = int(os.getenv("CLEANUP_HOURS"))
+MAX_AGE_HOURS = int(os.getenv("CLEANUP_HOURS", "1"))
 
 def cleanup_old_files():
     """Deletes files older than MAX_AGE_HOURS"""
