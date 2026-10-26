@@ -36,7 +36,7 @@ ALLOWED_DOMAINS = [
     # Internet Archive
     "archive.org",
     # Άλλες πηγές
-    "streamable.com", "ted.com", "twitter.com", "x.com",
+    "streamable.com", "ted.com", "twitter.com", "x.com", "archive.org",
 ]
 
 # --- Routes ---
